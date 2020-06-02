@@ -1,22 +1,31 @@
-package ethereum
+package ens
 
 import (
 	CoinType "github.com/trustwallet/blockatlas/coin"
 	"github.com/trustwallet/blockatlas/pkg/blockatlas"
 	"github.com/trustwallet/blockatlas/pkg/errors"
 	"github.com/trustwallet/blockatlas/pkg/logger"
-	"github.com/trustwallet/blockatlas/platform/ethereum/ens"
 	AddressEncoder "github.com/trustwallet/ens-coincodec"
 )
 
-func (p *Platform) Lookup(coins []uint64, name string) ([]blockatlas.Resolved, error) {
+type NamingProvider struct {
+	client RpcClient
+}
+
+func Init(rpc string) *NamingProvider {
+	return &NamingProvider{
+		client: RpcClient{Request: blockatlas.InitJSONClient(rpc)},
+	}
+}
+
+func (p *NamingProvider) Lookup(coins []uint64, name string) ([]blockatlas.Resolved, error) {
 	var result []blockatlas.Resolved
-	node, err := ens.NameHash(name)
+	node, err := NameHash(name)
 	if err != nil {
 		return result, errors.E(err, "name hash failed")
 	}
 	for _, coin := range coins {
-		resolver, err := p.ens.Resolver(node[:])
+		resolver, err := p.client.Resolver(node[:])
 		if err != nil {
 			return result, errors.E(err, "query resolver failed")
 		}
@@ -32,8 +41,8 @@ func (p *Platform) Lookup(coins []uint64, name string) ([]blockatlas.Resolved, e
 	return result, nil
 }
 
-func (p *Platform) addressForCoin(resovler string, node []byte, coin uint64) (string, error) {
-	result, err := p.ens.Addr(resovler, node, coin)
+func (p *NamingProvider) addressForCoin(resovler string, node []byte, coin uint64) (string, error) {
+	result, err := p.client.Addr(resovler, node, coin)
 	if err != nil {
 		if coin == CoinType.ETH {
 			// user may not set multi coin address
@@ -52,6 +61,6 @@ func (p *Platform) addressForCoin(resovler string, node []byte, coin uint64) (st
 	return encoded, nil
 }
 
-func (p *Platform) lookupLegacyETH(resolver string, node []byte) (string, error) {
-	return p.ens.LegacyAddr(resolver, node)
+func (p *NamingProvider) lookupLegacyETH(resolver string, node []byte) (string, error) {
+	return p.client.LegacyAddr(resolver, node)
 }

@@ -14,6 +14,7 @@ import (
 	"github.com/trustwallet/blockatlas/platform/cosmos"
 	"github.com/trustwallet/blockatlas/platform/elrond"
 	"github.com/trustwallet/blockatlas/platform/ethereum"
+	"github.com/trustwallet/blockatlas/platform/ethereum/ens"
 	"github.com/trustwallet/blockatlas/platform/fio"
 	"github.com/trustwallet/blockatlas/platform/harmony"
 	"github.com/trustwallet/blockatlas/platform/icon"
@@ -119,7 +120,7 @@ func getCollectionsHandlers() blockatlas.CollectionsAPIs {
 
 func getNamingHandlers() map[uint]blockatlas.NamingServiceAPI {
 	return map[uint]blockatlas.NamingServiceAPI{
-		coin.ETH: ethereum.Init(coin.ETH, GetApiVar(coin.ETH), GetRpcVar(coin.ETH)),
+		coin.ETH: ens.Init(GetRpcVar(coin.ETH)),
 		coin.FIO: fio.Init(GetApiVar(coin.FIO)),
 		coin.ZIL: zilliqa.Init(GetApiVar(coin.ZIL), GetVar("zilliqa.key"), GetRpcVar(coin.ZIL), GetVar("zilliqa.lookup")),
 	}
