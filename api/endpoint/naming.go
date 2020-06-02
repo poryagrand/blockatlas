@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/trustwallet/blockatlas/api/model"
 	"github.com/trustwallet/blockatlas/pkg/logger"
-	domains "github.com/trustwallet/blockatlas/services/naming"
+	"github.com/trustwallet/blockatlas/services/naming"
 )
 
 // @Summary Lookup .eth / .zil addresses
@@ -29,7 +29,7 @@ func GetAddressByCoinAndDomain(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.CreateErrorResponse(model.InvalidQuery, err))
 		return
 	}
-	result, err := domains.HandleLookup(name, []uint64{coin})
+	result, err := naming.HandleLookup(name, []uint64{coin})
 	if err != nil {
 		logger.Warn(err)
 		c.JSON(http.StatusNotFound, model.CreateErrorResponse(model.InternalFail, err))
@@ -60,7 +60,7 @@ func GetAddressByCoinAndDomainBatch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.CreateErrorResponse(model.InvalidQuery, err))
 		return
 	}
-	result, err := domains.HandleLookup(name, coins)
+	result, err := naming.HandleLookup(name, coins)
 	if err != nil {
 		logger.Warn(err)
 		c.JSON(http.StatusNotFound, model.CreateErrorResponse(model.InternalFail, err))
