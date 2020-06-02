@@ -1,17 +1,29 @@
-package zilliqa
+package naming
 
 import (
 	CoinType "github.com/trustwallet/blockatlas/coin"
 	"github.com/trustwallet/blockatlas/pkg/blockatlas"
 )
 
-type ZNSResponse struct {
-	Addresses map[string]string
+type (
+	NamingProvider struct {
+		client Client
+	}
+
+	ZNSResponse struct {
+		Addresses map[string]string
+	}
+)
+
+func Init(client string) *NamingProvider {
+	return &NamingProvider{
+		client: Client{blockatlas.InitClient(client)},
+	}
 }
 
-func (p *Platform) Lookup(coins []uint64, name string) ([]blockatlas.Resolved, error) {
+func (p *NamingProvider) Lookup(coins []uint64, name string) ([]blockatlas.Resolved, error) {
 	var result []blockatlas.Resolved
-	resp, err := p.udClient.LookupName(name)
+	resp, err := p.client.LookupName(name)
 	if err != nil {
 		return result, err
 	}
