@@ -16,6 +16,6 @@ func SetupPlatformAPI(router gin.IRouter) {
 	}
 
 	RegisterBatchAPI(router)
-	RegisterDomainAPI(router)
+	RegisterNamingAPI(router)
 	RegisterBasicAPI(router)
 }
