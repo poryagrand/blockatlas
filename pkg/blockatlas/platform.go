@@ -61,7 +61,6 @@ type (
 
 	// NamingServiceAPI provides public name service domains HTTP routes
 	NamingServiceAPI interface {
-		Platform
 		Lookup(coins []uint64, name string) ([]Resolved, error)
 	}
 
