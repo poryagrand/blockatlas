@@ -61,6 +61,7 @@ type (
 
 	// NamingServiceAPI provides public name service domains HTTP routes
 	NamingServiceAPI interface {
+		Match(name string) bool
 		Lookup(coins []uint64, name string) ([]Resolved, error)
 	}
 
